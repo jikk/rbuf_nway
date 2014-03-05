@@ -76,8 +76,6 @@ inline reset_rbuf_idx_no_sec_chk(UINT32 ent)
 }
 
 
-
 int main (int argc, char* argv[]){
-
-
+    ;
 }
