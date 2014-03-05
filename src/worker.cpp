@@ -47,13 +47,20 @@ void worker_main(void *args){
 }
 
 uint32_t batch_process(int32_t bufsize) {
-    for (;; local_rbuf_idx++) {
+    for (int count = 0;; local_rbuf_idx++) {
         if (ring_buffer[local_rbuf_idx] == RBUF_EXIT) 
             return RBUF_EXIT;
         else if (ring_buffer[local_rbuf_idx] == RBUF_WRAP) 
+            if (count == bufsize) {
+                ;
+            } else {
+                fprintf(stderr,"Error: count doesn't match %d %d \n", bufsize, count);
+            }
+
             return RBUF_WRAP;
         else {
             //do something.
+            count++;
         }
     }
 }
@@ -74,7 +81,7 @@ void worker_null(void *args) {
       perror("sched_setaffinity");
     }
 
-    while(1){
+    while(1) {
       /* wait for the next chunk */
       while(nway_ctrl[local_ctrl_idx] == 0) {
         usleep(50);
