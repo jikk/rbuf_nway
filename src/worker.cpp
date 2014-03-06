@@ -80,6 +80,7 @@ void* worker_main(void *args){
         if (ret == RBUF_EXIT)
             break;
     }   // while-loop
+    return 0;
 }
 
 void* worker_null(void *args) {
@@ -114,7 +115,7 @@ void* worker_null(void *args) {
       for (;; local_rbuf_idx++)
       {
         if (ring_buffer[local_rbuf_idx] == RBUF_EXIT) {
-          return;
+          return 0;
         } else if (ring_buffer[local_rbuf_idx] == RBUF_WRAP) {
           local_rbuf_idx++;
           break;
@@ -128,4 +129,5 @@ void* worker_null(void *args) {
       if (local_ctrl_idx == 0)
         local_rbuf_idx = 0;
     } // while-loop
+    return 0;
 }
