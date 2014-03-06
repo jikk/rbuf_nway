@@ -1,4 +1,6 @@
+#include <stdio.h>
 #include <stdint.h>
+
 #ifdef __linux
 #include <sched.h>
 #elif defined(__APPLE__)
@@ -9,7 +11,7 @@
 #include "rbuf.h"
 
 #define CHK_INTERVAL 128
-#define MAX_RUN 1024 * 1024 * 1024
+#define MAX_RUN 8 * 1024 * 1024 * 1024
 
 uint32_t ring_buffer[RBUF_HIGH];
 uint32_t local_rbuf_idx = 0;
@@ -112,7 +114,7 @@ uint64_t counter = 0;
             ENQ(local_rbuf_idx, 100);
             INC(local_rbuf_idx, 1);
 
-            if (++counter > MAX_RUN)
+            if (++counter > (uint64_t) MAX_RUN)
                 exit_flag = true;
         }
         if (rbuf_overflow()) {
