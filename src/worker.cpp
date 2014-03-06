@@ -8,15 +8,33 @@
 #include <mach/thread_policy.h>
 #endif
 #include "rbuf.h"
+#include "worker.h"
 
 /* Shared global variables */
 extern uint32_t ring_buffer[RBUF_HIGH];
 extern uint32_t local_rbuf_idx;
-extern uint32_t nway_ctrl[(1 << NUM_CHUNK)];
+extern volatile uint32_t nway_ctrl[(1 << NUM_CHUNK)];
 
-uint32_t batch_process(int32_t bufsize);
+static uint32_t batch_process(int32_t bufsize) {
+    for (int count = 0;; local_rbuf_idx++) {
+        if (ring_buffer[local_rbuf_idx] == RBUF_EXIT) { 
+            return RBUF_EXIT;
+        } else if (ring_buffer[local_rbuf_idx] == RBUF_WRAP) {
+            if (count == bufsize) {
+                ;
+            } else {
+                fprintf(stderr,"Error: count doesn't match %d %d \n", bufsize, count);
+            }
 
-void worker_main(void *args){
+            return RBUF_WRAP;
+        } else {
+            //do something.
+            count++;
+        }
+    }
+}
+
+void* worker_main(void *args){
     uint32_t bufsize = 0;
         
     /* variables for local nway buffer control */
@@ -64,31 +82,10 @@ void worker_main(void *args){
     }   // while-loop
 }
 
-uint32_t batch_process(int32_t bufsize) {
-    for (int count = 0;; local_rbuf_idx++) {
-        if (ring_buffer[local_rbuf_idx] == RBUF_EXIT) { 
-            return RBUF_EXIT;
-        } else if (ring_buffer[local_rbuf_idx] == RBUF_WRAP) {
-            if (count == bufsize) {
-                ;
-            } else {
-                fprintf(stderr,"Error: count doesn't match %d %d \n", bufsize, count);
-            }
-
-            return RBUF_WRAP;
-        } else {
-            //do something.
-            count++;
-        }
-    }
-}
-
-void worker_null(void *args) {
+void* worker_null(void *args) {
     /* variables for local nway buffer control */
     uint8_t  local_ctrl_idx = 0;
 
-    /* process pass-in variable and setup (a single) thread context */  
-    volatile uint32_t *nway_ctrl = (uint32_t*) args;
 #ifdef __linux
     /* setting cpu affinity */
     cpu_set_t mask;

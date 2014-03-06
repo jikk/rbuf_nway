@@ -8,6 +8,7 @@
 #include <mach/thread_policy.h>
 #endif
 
+#include <pthread.h> 
 #include <unistd.h>
 #include "rbuf.h"
 #include "worker.h"
@@ -108,7 +109,11 @@ uint64_t counter = 0;
 #endif
 
     if (mode != STANDALONE) {
-        //fork thread here.
+        // create worker thread from here.
+
+        pthread_t tid;
+        pthread_create(&tid, NULL, worker_main, (void *) NULL);
+
     }
 
     while (1) {
