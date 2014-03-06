@@ -5,8 +5,10 @@
 #include <mach/mach.h>
 #include <mach/thread_policy.h>
 #endif
+
 #include <unistd.h>
 #include "rbuf.h"
+#include "worker.h"
 
 #define CHK_INTERVAL 128
 #define MAX_RUN 1024 * 1024 * 1024
