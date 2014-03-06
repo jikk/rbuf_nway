@@ -1,8 +1,11 @@
+#CFLAGS=-O3
+CFLAGS=-g
+
 all: worker main.cpp
-	$(CXX) -pthread -o main main.cpp worker.o
+	$(CXX) $(CFLAGS) -pthread -o main main.cpp worker.o
 
 worker: worker.cpp
-	$(CXX) -c -o worker.o worker.cpp
+	$(CXX) $(CFLAGS) -c -o worker.o worker.cpp
 
 clean:
-	rm -f main
+	rm -f main worker.o core

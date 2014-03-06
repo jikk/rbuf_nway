@@ -87,6 +87,7 @@ inline reset_rbuf_idx_no_worker()
 
 int main (int argc, char* argv[]){
 exec_mode mode = STANDALONE;
+//exec_mode mode = WORKER;
 bool exit_flag = false;
 uint64_t counter = 0;
 
@@ -125,6 +126,7 @@ uint64_t counter = 0;
                 exit_flag = true;
         }
         if (rbuf_overflow()) {
+            printf("DBG:main %d\n", local_rbuf_idx);
             if (mode == STANDALONE) {
                reset_rbuf_idx_no_worker();
             } else {

@@ -17,6 +17,7 @@ extern volatile uint32_t nway_ctrl[(1 << NUM_CHUNK)];
 
 static uint32_t batch_process(int32_t bufsize) {
     for (int count = 0;; local_rbuf_idx++) {
+        printf ("DBG: %d %d\n", ring_buffer[local_rbuf_idx], local_rbuf_idx);
         if (ring_buffer[local_rbuf_idx] == RBUF_EXIT) { 
             return RBUF_EXIT;
         } else if (ring_buffer[local_rbuf_idx] == RBUF_WRAP) {
@@ -66,7 +67,7 @@ void* worker_main(void *args){
         while(nway_ctrl[local_ctrl_idx] == 0) {
             usleep(50);
         }
-        bufsize = nway_ctrl[local_rbuf_idx];
+        bufsize = nway_ctrl[local_ctrl_idx];
         ret = batch_process(bufsize);
 
         nway_ctrl[local_ctrl_idx] = 0;
