@@ -45,4 +45,9 @@
   : "r" (idx)                     \
 )
 
+/* thread affinity setting */
+#ifdef __APPLE__
+#define AFFINITY_TAG 0
+#endif
+
 #endif /* __RBUF_H__ */
